@@ -27,33 +27,11 @@ public class SpringSecurity {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/api/users/**").hasAnyRole("USER","ADMIN","MODERATOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("admin123")) // Usamos el parámetro
-                .roles("ADMIN")
-                .build();
-
-        UserDetails moderator = User.builder()
-                .username("moderator")
-                .password(passwordEncoder.encode("moderator123")) // Usamos el parámetro
-                .roles("MODERATOR")
-                .build();
-
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("user123")) // Usamos el parámetro
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, moderator, user);
     }
 
     @Bean
