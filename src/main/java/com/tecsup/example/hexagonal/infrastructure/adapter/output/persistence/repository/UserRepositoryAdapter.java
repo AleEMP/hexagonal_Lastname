@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
@@ -45,4 +47,23 @@ public class UserRepositoryAdapter implements UserRepository {
     public Optional<User> findByEmail(String email) {
         return this.jpaRepository.findByEmail(email).map(this.userMapper::toDomain);
     }
+
+    @Override
+    public List<User> findByFatherLastname(String fatherLastname) {
+        List<UserEntity> entities = jpaRepository.findByFatherLastname(fatherLastname);
+        return userMapper.toDomainList(entities);
+    }
+
+    @Override
+    public Optional<User> findByDni(String dni) {
+
+        return jpaRepository.findByDni(dni).map(userMapper::toDomain);
+    }
+
+    @Override
+    public List<User> findByAgeLessThan(int age) {
+        List<UserEntity> entities = jpaRepository.findByAgeLessThan(age);
+        return userMapper.toDomainList(entities);
+    }
+
 }

@@ -13,14 +13,39 @@ VALUES
     ('Juan', 'Diaz', 'Paredes', 'juan.diaz@example.com', '75678901', '945678901', 27, 'LOCAL', FALSE, 1);
 
 -- Insert admin user with hashed password (admin123)
-INSERT INTO users (name, father_lastname, email, password, provider, enabled, role_id, created_at)
+INSERT INTO users (name, father_lastname, email, password, enabled, role_id, dni, age, phone)
 VALUES (
     'Admin',
     'User',
     'admin@hexagonal-demo.com',
     '$2a$12$gBpsIP1vjx4scbpkKgh8w.LA2n0zOie4S86mSJ6D/ByjKdAInZOG2',
-    'LOCAL',
     TRUE,
     2,
-    CURRENT_TIMESTAMP
+    '16516521',
+    25,
+    '957046510'
+),
+(
+    'Test',
+    'User',
+    'testuser@example.com',
+    -- Contraseña 'user123' encriptada con BCrypt
+    '$2a$10$E25m/nF3j6f1zZ5.4I6Qk.iPqf.7Y4T4T6k3R2g8Z2e9T6n3S5m7O',
+    true,
+    1,
+    '98765432',
+    25,
+    '987654321'
+),
+(
+    'Test',
+    'Monitor',
+    'monitor@example.com',
+    -- Contraseña 'monitor123' encriptada con BCrypt
+    '$2a$10$w.M9yA5s0fT8h.Q8fV9v6u8N2c3b5E4D1t7g9k0l2m4n6o8p0q2r',
+    true,
+    3,
+    '87654321',
+    35,
+    '987654322'
 );

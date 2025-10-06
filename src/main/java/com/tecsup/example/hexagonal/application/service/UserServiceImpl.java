@@ -8,6 +8,9 @@ import com.tecsup.example.hexagonal.domain.model.Role;
 import com.tecsup.example.hexagonal.domain.model.User;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -31,9 +34,6 @@ public class UserServiceImpl implements UserService {
         return user;
 
     }
-
-
-
     @Override
     public User findUser(Long id) {
 
@@ -46,8 +46,20 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
+    @Override
+    public List<User> findByFatherLastname(String fatherLastname) {
+        return userRepository.findByFatherLastname(fatherLastname);
+    }
 
+    @Override
+    public Optional<User> findByDni(String dni) {
+        return userRepository.findByDni(dni);
+    }
 
+    @Override
+    public List<User> findByAgeLessThan(int age) {
+        return userRepository.findByAgeLessThan(age);
+    }
     private void validateUserInput(User newUser) {
 
         if (!newUser.hasValidName())
@@ -55,7 +67,5 @@ public class UserServiceImpl implements UserService {
 
         if (!newUser.hasValidEmail())
             throw new InvalidUserDataException("Invalid email");
-
-
     }
 }

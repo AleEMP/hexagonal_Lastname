@@ -2,16 +2,21 @@ package com.tecsup.example.hexagonal.application.service;
 
 import com.tecsup.example.hexagonal.application.port.output.UserRepository;
 import com.tecsup.example.hexagonal.domain.exception.UserNotFoundException;
+import com.tecsup.example.hexagonal.domain.model.Role;
 import com.tecsup.example.hexagonal.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,88 +25,88 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @InjectMocks
     private UserServiceImpl userService;
+
+    private User user;
 
     @BeforeEach
     void setup() {
-        // Aquí puedes inicializar los mocks y el servicio
-        userService = new UserServiceImpl(userRepository);
-    }
-/*
-    @Test
-    void createUser() {
-
-        Long ID = 50L;
-        String NAME = "Juana";
-        String EMAIL = "juana@demo.com";
-
-        // Initial Condition
-        User newUser = new User(null, NAME, EMAIL); // UserRequest
-        User savedUser = new User(ID, NAME, EMAIL);  // Save UserEntity
-
-        // Mocking the repository behavior
-        when(userRepository.save(newUser)).thenReturn(savedUser);
-
-        // Execute the service method
-        User realUser = userService.createUser(newUser);
-
-        // Validate the results
-        assertNotNull(realUser);
-        assertEquals(ID, realUser.getId());
-        assertEquals(NAME, realUser.getName());
-        assertEquals(EMAIL, realUser.getEmail());
-
+        user = new User(1L,
+                "Juan",
+                "juan@perez.com",
+                "password123",
+                true,
+                "987654321",
+                "12345678",
+                "Perez",
+                "Gomez",
+                30,
+                Role.USER);
     }
 
     @Test
-    void findUser() {
-        Long ID = 100L;
-        String NAME = "Jaime";
-        String EMAIL = "jaime@demo.com";
+    void createUser_ShouldReturnSavedUser() {
+        User userToSave = new User(null, "Juan", "juan@perez.com", "password123", true, "987654321", "12345678", "Perez", "Gomez", 30, Role.USER);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
-        // Initial Condition
-        User existingUser = new User(ID, NAME, EMAIL);
+        User createdUser = userService.createUser(userToSave);
 
-        // Mocking the repository behavior
-        when(userRepository.findById(100L)).thenReturn(Optional.of(existingUser));
-
-        // Execute the service method
-        User realUser = userService.findUser(100L);
-
-        // Validate the results
-        assertNotNull(realUser);
-
-        // hope values, real values
-        assertEquals(ID, realUser.getId());
-        assertEquals(NAME, realUser.getName());
-        assertEquals(EMAIL, realUser.getEmail());
-
+        assertNotNull(createdUser);
+        assertEquals(user.getId(), createdUser.getId());
+        assertEquals(user.getName(), createdUser.getName());
     }
 
     @Test
-    public void findUser_NotFound() {
-        Long ID_UNKNOW = 999L;
+    void findUser_ShouldReturnUser_WhenUserExists() {
+        Long userId = 1L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        // Mocking the repository behavior to return empty
-        when(userRepository.findById(ID_UNKNOW)).thenReturn(Optional.empty());
+        User foundUser = userService.findUser(userId);
 
-        // Execute the service method and expect an exception
-        assertThrows(UserNotFoundException.class,
-                () -> userService.findUser(ID_UNKNOW));
-
+        assertNotNull(foundUser);
+        assertEquals(userId, foundUser.getId());
     }
-*/
+
+    @Test
+    void findUser_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
+        Long userId = 999L;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.findUser(userId));
+    }
+
+    @Test
+    void findByDni_ShouldReturnUser_WhenDniExists() {
+        String dni = "12345678";
+        when(userRepository.findByDni(dni)).thenReturn(Optional.of(user));
+
+        Optional<User> result = userService.findByDni(dni);
+
+        assertTrue(result.isPresent());
+        assertEquals(dni, result.get().getDni());
+    }
+
+    @Test
+    void findByFatherLastname_ShouldReturnUserList() {
+        String lastname = "Perez";
+        when(userRepository.findByFatherLastname(lastname)).thenReturn(Collections.singletonList(user));
+
+        List<User> result = userService.findByFatherLastname(lastname);
+
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(lastname, result.get(0).getFatherLastname());
+    }
+
+    @Test
+    void findByAgeLessThan_ShouldReturnUserList() {
+        int age = 35;
+        when(userRepository.findByAgeLessThan(age)).thenReturn(Collections.singletonList(user));
+
+        List<User> result = userService.findByAgeLessThan(age);
+
+        assertFalse(result.isEmpty());
+        assertTrue(result.get(0).getAge() < age);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

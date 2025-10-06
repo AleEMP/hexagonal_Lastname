@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -55,7 +57,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long id)
+    {
         try {
 
             User user = this.userService.findUser(id);
@@ -69,7 +72,24 @@ public class UserController {
             return ResponseEntity.badRequest().build();
 
         }
+    }
+    @GetMapping("/lastname/{fatherLastname}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<User>> getUsersByFatherLastname(@PathVariable String fatherLastname) {
+        return new ResponseEntity<>(userService.findByFatherLastname(fatherLastname), HttpStatus.OK);
+    }
 
+    @GetMapping("/dni/{dni}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> getUserByDni(@PathVariable String dni) {
+        return userService.findByDni(dni)
+                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    @GetMapping("/age-less-than/{age}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<List<User>> getUsersByAgeLessThan(@PathVariable int age) {
+        return new ResponseEntity<>(userService.findByAgeLessThan(age), HttpStatus.OK);
     }
 }
 

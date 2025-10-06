@@ -25,10 +25,4 @@ public class HexagonalConfig {
                                    JwtTokenProvider jwtTokenProvider) {
         return new AuthServiceImpl(userRepository, passwordEncoder, jwtTokenProvider);
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 }

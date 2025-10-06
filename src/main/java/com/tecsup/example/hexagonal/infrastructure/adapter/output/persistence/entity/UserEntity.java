@@ -29,9 +29,9 @@ public class UserEntity {
     @Column (nullable = false, length = 8)
     private String dni;
     @Column (nullable = false, length = 100)
-    private String father_lastname;
+    private String fatherLastname;
     @Column (nullable = true, length = 100)
-    private String mother_lastname;
+    private String motherLastname;
     @Column
     private int age;
 

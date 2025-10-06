@@ -1,7 +1,10 @@
 package com.tecsup.example.hexagonal.domain.model;
 
-import jakarta.persistence.Column;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -16,8 +19,8 @@ public class User {
     private boolean enabled;
     private String phone;
     private String dni;
-    private String father_lastname;
-    private String mother_lastname;
+    private String fatherLastname;
+    private String motherLastname;
     private int age;
 
     private Role role;
